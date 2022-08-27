@@ -232,7 +232,7 @@ fpu_ftoi(struct fpemu *fe, struct fpn *fp)
 		break;
 	}
 	/* overflow: replace any inexact exception with invalid */
-	fe->fe_cx |= FPSCR_VXCVI;
+	fe->fe_cx |= FPSCR_VXCVI; /* XXX contradict with comment above */
 	return (0x7fffffff + sign);
 }
 

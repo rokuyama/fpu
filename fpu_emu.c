@@ -798,7 +798,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 	}
 	if (fsr & FPSR_INV)
 		fsr |= FPSCR_VX;
-	if (mtfsf == 0 && ((fsr ^ fe->fe_fpscr) & FPSR_EX_MSK))
+	if (mtfsf == 0 && ((fsr ^ fe->fe_fpscr) & FPSR_EX_MSK) != 0)
 		fsr |= FPSCR_FX;
 
 	if (cond) {

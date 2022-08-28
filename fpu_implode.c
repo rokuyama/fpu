@@ -408,7 +408,7 @@ zero:		res[1] = 0;
 	if (round(fe, fp) && fp->fp_mant[2] == DBL_EXP(2))
 		exp++;
 	if (exp >= DBL_EXP_INFNAN) {
-		fe->fe_cx |= FPSCR_OX | FPSCR_UX;
+		fe->fe_cx |= FPSCR_OX;
 		if (toinf(fe, sign)) {
 			res[1] = 0;
 			return (sign | DBL_EXP(DBL_EXP_INFNAN) | 0);

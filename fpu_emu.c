@@ -289,7 +289,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 	int ra, rb, rc, rt, type, mask, fsr, cx, bf, setcr;
 	unsigned int cond;
 	struct fpreg *fs;
-	int mtfsf = 0;
+	int mtfsf = 0, mtfsb1 = 0;
 
 	/* Setup work. */
 	fp = NULL;
@@ -513,8 +513,9 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			case	OPC63_MTFSB1:
 				FPU_EMU_EVCNT_INCR(mtfsb1);
 				DPRINTF(FPE_INSN, ("fpu_execute: MTFSB1\n"));
-				fe->fe_fpscr |= 
-					(~(FPSCR_VX|FPSR_EX) & (1<<(31-rt)));
+				mtfsb1 = 1;
+				fe->fe_cx = (1 << (31 - rt)) &
+				    ~(FPSCR_FEX | FPSCR_VX);
 				break;
 			case	OPC63_FNEG:
 				FPU_EMU_EVCNT_INCR(fnegabs);
@@ -543,8 +544,8 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			case	OPC63_MTFSB0:
 				FPU_EMU_EVCNT_INCR(mtfsb0);
 				DPRINTF(FPE_INSN, ("fpu_execute: MTFSB0\n"));
-				fe->fe_fpscr &=
-					((FPSCR_VX|FPSR_EX) & ~(1<<(31-rt)));
+				fe->fe_fpscr &= ~(1 << (31 - rt)) |
+				    (FPSCR_FEX | FPSCR_VX);
 				break;
 			case	OPC63_FMR:
 				FPU_EMU_EVCNT_INCR(fmr);
@@ -783,7 +784,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 	cx = fe->fe_cx;
 	fsr = fe->fe_fpscr & ~(FPSCR_FEX|FPSCR_VX);
 	if (cx != 0) {
-		if (cx & FPSCR_FPRF) {
+		if (mtfsb1 == 0 && (cx & FPSCR_FPRF) != 0) {
 			/* Need to replace CC */
 			fsr &= ~FPSCR_FPRF;
 		}

@@ -1,4 +1,4 @@
-/*	$NetBSD: fpu_emu.h,v 1.4 2012/07/23 04:13:06 matt Exp $ */
+/*	$NetBSD: fpu_emu.h,v 1.6 2022/08/30 11:09:34 rin Exp $ */
 
 /*
  * Copyright (c) 1992, 1993

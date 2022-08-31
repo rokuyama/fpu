@@ -213,7 +213,6 @@ fpu_newnan(struct fpemu *fe)
 {
 	struct fpn *fp;
 
-	fe->fe_cx |= FPSCR_VXSNAN;
 	fp = &fe->fe_f3;
 	fp->fp_class = FPC_QNAN;
 	fp->fp_sign = 0;

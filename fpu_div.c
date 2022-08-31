@@ -183,7 +183,8 @@ fpu_div(struct fpemu *fe)
 	DPRINTF(FPE_REG, ("=>\n"));
 	if (ISNAN(x) || ISNAN(y)) {
 		ORDER(x, y);
-		fe->fe_cx |= FPSCR_VXSNAN;
+		if (ISSNAN(x) || ISSNAN(y))
+			fe->fe_cx |= FPSCR_VXSNAN;
 		DUMPFPN(FPE_REG, y);
 		return (y);
 	}

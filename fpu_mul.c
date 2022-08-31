@@ -134,7 +134,8 @@ fpu_mul(struct fpemu *fe)
 	ORDER(x, y);
 	if (ISNAN(y)) {
 		y->fp_sign ^= x->fp_sign;
-		fe->fe_cx |= FPSCR_VXSNAN;
+		if (ISSNAN(y))
+			fe->fe_cx |= FPSCR_VXSNAN;
 		DUMPFPN(FPE_REG, y);
 		return (y);
 	}

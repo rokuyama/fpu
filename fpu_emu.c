@@ -499,7 +499,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				fpu_implode(fe, fp, FTYPE_SNG, 
 					(u_int *)&fs->fpreg[rt]);
 				fpu_explode(fe, fp = &fe->fe_f1, FTYPE_SNG, rt);
-				type = FTYPE_DBL;
+				type = FTYPE_DBL | FTYPE_FPRF;
 				break;
 			case	OPC63_FCTIW:
 			case	OPC63_FCTIWZ:
@@ -627,7 +627,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				DPRINTF(FPE_INSN, ("fpu_execute: FCFID\n"));
 				type = FTYPE_LNG;
 				fpu_explode(fe, fp = &fe->fe_f1, type, rb);
-				type = FTYPE_DBL;
+				type = FTYPE_DBL | FTYPE_FPRF;
 				break;
 			default:
 				return (NOTFPU);
@@ -768,10 +768,11 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 
 			/* If the instruction was single precision, round */
 			if (!(instr.i_any.i_opcd & 0x4)) {
-				fpu_implode(fe, fp, FTYPE_SNG, 
+				fpu_implode(fe, fp, FTYPE_SNG | FTYPE_FPRF,
 					(u_int *)&fs->fpreg[rt]);
 				fpu_explode(fe, fp = &fe->fe_f1, FTYPE_SNG, rt);
-			}
+			} else
+				type |= FTYPE_FPRF;
 		}
 	} else {
 		return (NOTFPU);

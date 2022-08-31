@@ -283,9 +283,6 @@ fpu_ftoi(struct fpemu *fe, struct fpn *fp, int rn)
 
 /*
  * fpn -> extended int (high bits of int value returned as return value).
- *
- * N.B.: this conversion always rounds towards zero (this is a peculiarity
- * of the SPARC instruction set).
  */
 static uint64_t
 fpu_ftox(struct fpemu *fe, struct fpn *fp, int rn)

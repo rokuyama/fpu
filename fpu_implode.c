@@ -64,6 +64,11 @@ static int round(struct fpemu *, struct fpn *);
 static int toinf(struct fpemu *, int);
 static int round_int(struct fpn *, int *, int, int, int);
 
+static u_int fpu_ftoi(struct fpemu *, struct fpn *, int);
+static uint64_t fpu_ftox(struct fpemu *, struct fpn *, int);
+static u_int fpu_ftos(struct fpemu *, struct fpn *);
+static u_int fpu_ftod(struct fpemu *, struct fpn *, u_int *);
+
 /*
  * Round a number (algorithm from Motorola MC68882 manual, modified for
  * our internal format).  Set inexact exception if rounding is required.
@@ -227,7 +232,7 @@ round_int(struct fpn *fp, int *cx, int rn, int sign, int odd)
 /*
  * fpn -> int (int value returned as return value).
  */
-u_int
+static u_int
 fpu_ftoi(struct fpemu *fe, struct fpn *fp, int rn)
 {
 	u_int i;
@@ -282,7 +287,7 @@ fpu_ftoi(struct fpemu *fe, struct fpn *fp, int rn)
  * N.B.: this conversion always rounds towards zero (this is a peculiarity
  * of the SPARC instruction set).
  */
-uint64_t
+static uint64_t
 fpu_ftox(struct fpemu *fe, struct fpn *fp, int rn)
 {
 	uint64_t i;
@@ -335,7 +340,7 @@ fpu_ftox(struct fpemu *fe, struct fpn *fp, int rn)
  * fpn -> single (32 bit single returned as return value).
  * We assume <= 29 bits in a single-precision fraction (1.f part).
  */
-u_int
+static u_int
 fpu_ftos(struct fpemu *fe, struct fpn *fp)
 {
 	u_int sign = fp->fp_sign << 31;
@@ -416,7 +421,7 @@ done:
  *
  * This code mimics fpu_ftos; see it for comments.
  */
-u_int
+static u_int
 fpu_ftod(struct fpemu *fe, struct fpn *fp, u_int *res)
 {
 	u_int sign = fp->fp_sign << 31;

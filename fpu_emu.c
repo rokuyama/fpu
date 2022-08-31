@@ -230,6 +230,7 @@ fpu_emulate(struct trapframe *tf, struct fpreg *fpf, ksiginfo_t *ksi)
 	DPRINTF(FPE_EX, ("fpu_emulate: emulating insn %x at %p\n",
 	    insn.i_int, (void *)tf->tf_srr0));
 
+#if 1 /* XXXRO */
 	if ((insn.i_any.i_opcd == OPC_TWI) ||
 	    ((insn.i_any.i_opcd == OPC_integer_31) &&
 	    (insn.i_x.i_xo == OPC31_TW))) {
@@ -240,6 +241,8 @@ fpu_emulate(struct trapframe *tf, struct fpreg *fpf, ksiginfo_t *ksi)
 		ksi->ksi_code = TRAP_BRKPT;
 		return true;
 	}
+#endif
+
 	switch (fpu_execute(tf, &fe, &insn)) {
 	case 0:
 success:

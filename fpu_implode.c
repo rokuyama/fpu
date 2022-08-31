@@ -62,6 +62,7 @@ __KERNEL_RCSID(0, "$NetBSD: fpu_implode.c,v 1.10 2022/08/30 11:09:34 rin Exp $")
 
 static int round(struct fpemu *, struct fpn *);
 static int toinf(struct fpemu *, int);
+static int round_int(struct fpn *, int *, int, int, int);
 
 /*
  * Round a number (algorithm from Motorola MC68882 manual, modified for

@@ -210,11 +210,11 @@ round_int(struct fpn *fp, int *cx, int rn, int sign, int odd)
 	case FSR_RD_RZ:
 		return 0;
 	case FSR_RD_RP:
-		if (!sign && (g | rs))
+		if (!sign)
 			break;
 		return 0;
 	case FSR_RD_RM:
-		if (sign && (g | rs))
+		if (sign)
 			break;
 		return 0;
 	}

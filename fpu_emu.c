@@ -230,6 +230,16 @@ fpu_emulate(struct trapframe *tf, struct fpreg *fpf, ksiginfo_t *ksi)
 	DPRINTF(FPE_EX, ("fpu_emulate: emulating insn %x at %p\n",
 	    insn.i_int, (void *)tf->tf_srr0));
 
+	if ((insn.i_any.i_opcd == OPC_TWI) ||
+	    ((insn.i_any.i_opcd == OPC_integer_31) &&
+	    (insn.i_x.i_xo == OPC31_TW))) {
+		/* Check for the two trap insns. */
+		DPRINTF(FPE_EX, ("fpu_emulate: SIGTRAP\n"));
+		ksi->ksi_signo = SIGTRAP;
+		ksi->ksi_trap = EXC_PGM;
+		ksi->ksi_code = TRAP_BRKPT;
+		return true;
+	}
 	switch (fpu_execute(tf, &fe, &insn)) {
 	case 0:
 success:

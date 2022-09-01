@@ -293,6 +293,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 {
 	struct fpn *fp;
 	union instr instr = *insn;
+	uint64_t buf;
 	int *a;
 	vaddr_t addr;
 	int ra, rb, rc, rt, type, mask, fsr, cx, bf, setcr;
@@ -335,7 +336,6 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 		 * Convert to/from single if needed, calculate addr,
 		 * and update index reg if needed.
 		 */
-		uint64_t buf;
 		size_t size = sizeof(float);
 		int store, update;
 
@@ -690,12 +690,11 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			case	OPC59_FRES:
 				FPU_EMU_EVCNT_INCR(fpres);
 				DPRINTF(FPE_INSN, ("fpu_execute: FPRES\n"));
-				fpu_explode(fe, &fe->fe_f1, type, FRP(rb));
-				fp = fpu_sqrt(fe);
-				/* now we've gotta overwrite the dest reg */
-				*((int *)&fe->fe_fpstate->fpreg[rt]) = 1;
-				fpu_explode(fe, &fe->fe_f1, FTYPE_INT, FRP(rt));
-				fpu_div(fe);
+				buf = 1;
+				fpu_explode(fe, &fe->fe_f1, FTYPE_INT,
+				    (void *)&buf);
+				fpu_explode(fe, &fe->fe_f2, type, FRP(rb));
+				fp = fpu_div(fe);
 				break;
 			case	OPC59_FMULS:
 				FPU_EMU_EVCNT_INCR(fmul);
@@ -711,10 +710,10 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				fpu_explode(fe, &fe->fe_f1, type, FRP(rb));
 				fp = fpu_sqrt(fe);
 				fe->fe_f2 = *fp;
-				/* now we've gotta overwrite the dest reg */
-				*((int *)&fe->fe_fpstate->fpreg[rt]) = 1;
-				fpu_explode(fe, &fe->fe_f1, FTYPE_INT, FRP(rt));
-				fpu_div(fe);
+				buf = 1;
+				fpu_explode(fe, &fe->fe_f1, FTYPE_INT,
+				    (void *)&buf);
+				fp = fpu_div(fe);
 				break;
 			case	OPC59_FMSUBS:
 				FPU_EMU_EVCNT_INCR(fmulsub);

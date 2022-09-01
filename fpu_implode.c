@@ -478,7 +478,6 @@ zero:		return HI_WORD(sign);
 	if ((exp = fp->fp_exp + DBL_EXP_BIAS) <= 0) {
 		(void) fpu_shr(fp, FP_NMANT - FP_NG - DBL_FRACBITS - exp);
 		if (round(fe, fp) && fp->fp_mant[2] == DBL_EXP(1)) {
-printf("%s: here\n", __func__);
 			if (fprf)
 				fe->fe_cx |= FPRF_SIGN(sign);
 			return HI_WORD(sign | DBL_EXP(1) | 0);

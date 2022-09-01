@@ -503,7 +503,7 @@ printf("%s: here\n", __func__);
 		}
 		if (fprf)
 			fe->fe_cx |= FPRF_SIGN(sign);
-		return HI_WORD(sign | DBL_EXP(DBL_EXP_INFNAN) | DBL_MASK) |
+		return HI_WORD(sign | DBL_EXP(DBL_EXP_INFNAN - 1) | DBL_MASK) |
 		       LO_WORD(~0);
 	}
 	if (fprf)

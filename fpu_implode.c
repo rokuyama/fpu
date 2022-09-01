@@ -1,4 +1,4 @@
-/*	$NetBSD: fpu_implode.c,v 1.10 2022/08/30 11:09:34 rin Exp $ */
+/*	$NetBSD: fpu_implode.c,v 1.14 2022/09/01 06:08:16 rin Exp $ */
 
 /*
  * Copyright (c) 1992, 1993
@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__KERNEL_RCSID(0, "$NetBSD: fpu_implode.c,v 1.10 2022/08/30 11:09:34 rin Exp $");
+__KERNEL_RCSID(0, "$NetBSD: fpu_implode.c,v 1.14 2022/09/01 06:08:16 rin Exp $");
 
 #include <sys/types.h>
 #include <sys/systm.h>

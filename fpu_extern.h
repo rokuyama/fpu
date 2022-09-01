@@ -1,4 +1,4 @@
-/*	$NetBSD: fpu_extern.h,v 1.7 2022/08/30 11:09:34 rin Exp $	*/
+/*	$NetBSD: fpu_extern.h,v 1.8 2022/09/01 05:58:19 rin Exp $	*/
 
 /*-
  * Copyright (c) 1995 The NetBSD Foundation, Inc.

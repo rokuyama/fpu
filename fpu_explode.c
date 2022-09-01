@@ -206,15 +206,14 @@ fpu_dtof(struct fpn *fp, u_int i, u_int j)
  * operations are performed.)
  */
 void
-fpu_explode(struct fpemu *fe, struct fpn *fp, int type, int reg)
+fpu_explode(struct fpemu *fe, struct fpn *fp, int type, u_int *space)
 {
-	u_int s, *space;
+	u_int s;
 	uint64_t l, *xspace;
 
-	xspace = (uint64_t *)&fe->fe_fpstate->fpreg[reg];
-	l = xspace[0];
-	space = (u_int *)&fe->fe_fpstate->fpreg[reg];
-	s = space[0];
+	s = *space;
+	xspace = (uint64_t *)space;
+	l = *xspace;
 	fp->fp_sign = s >> 31;
 	fp->fp_sticky = 0;
 	switch (type) {

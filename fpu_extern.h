@@ -60,7 +60,7 @@ int fpu_itof(struct fpn *, u_int);
 int fpu_xtof(struct fpn *, uint64_t);
 int fpu_stof(struct fpn *, u_int);
 int fpu_dtof(struct fpn *, u_int, u_int);
-void fpu_explode(struct fpemu *, struct fpn *, int, int);
+void fpu_explode(struct fpemu *, struct fpn *, int, u_int *);
 
 /* fpu_implode.c */
 void fpu_implode(struct fpemu *, struct fpn *, int, u_int *);

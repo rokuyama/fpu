@@ -185,7 +185,7 @@ struct	fpn *fpu_newnan(struct fpemu *);
  */
 int	fpu_shr(struct fpn *, int);
 
-void	fpu_explode(struct fpemu *, struct fpn *, int, int);
+void	fpu_explode(struct fpemu *, struct fpn *, int, u_int *);
 void	fpu_implode(struct fpemu *, struct fpn *, int, u_int *);
 
 #ifdef DEBUG

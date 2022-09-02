@@ -551,6 +551,7 @@ fpu_implode(struct fpemu *fe, struct fpn *fp, int type, uint64_t *p)
 
 	case FTYPE_SNG:
 		*hi = fpu_ftos(fe, fp, fprf);
+		*lo = 0;
 		DPRINTF(FPE_REG, ("fpu_implode: single %x\n",
 			space[0]));
 		break;

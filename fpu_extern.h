@@ -60,10 +60,10 @@ int fpu_itof(struct fpn *, u_int);
 int fpu_xtof(struct fpn *, uint64_t);
 int fpu_stof(struct fpn *, u_int);
 int fpu_dtof(struct fpn *, u_int, u_int);
-void fpu_explode(struct fpemu *, struct fpn *, int, u_int *);
+void fpu_explode(struct fpemu *, struct fpn *, int, uint64_t);
 
 /* fpu_implode.c */
-void fpu_implode(struct fpemu *, struct fpn *, int, u_int *);
+void fpu_implode(struct fpemu *, struct fpn *, int, uint64_t *);
 
 /* fpu_mul.c */
 struct fpn *fpu_mul(struct fpemu *);

@@ -206,39 +206,38 @@ fpu_dtof(struct fpn *fp, u_int hi, u_int lo)
  * operations are performed.)
  */
 void
-fpu_explode(struct fpemu *fe, struct fpn *fp, int type, u_int *space)
+fpu_explode(struct fpemu *fe, struct fpn *fp, int type, uint64_t i)
 {
-	u_int s;
-	uint64_t l, *xspace;
+	u_int hi, lo;
+	int class;
 
-	s = *space;
-	xspace = (uint64_t *)space;
-	l = *xspace;
-	fp->fp_sign = s >> 31;
+	hi = (u_int)(i >> 32);
+	lo = (u_int)i;
+	fp->fp_sign = hi >> 31;
 	fp->fp_sticky = 0;
 	switch (type) {
 
 	case FTYPE_LNG:
-		s = fpu_xtof(fp, l);
+		class = fpu_xtof(fp, i);
 		break;
 
 	case FTYPE_INT:
-		s = fpu_itof(fp, space[1]);
+		class = fpu_itof(fp, lo);
 		break;
 
 	case FTYPE_SNG:
-		s = fpu_stof(fp, s);
+		class = fpu_stof(fp, hi);
 		break;
 
 	case FTYPE_DBL:
-		s = fpu_dtof(fp, s, space[1]);
+		class = fpu_dtof(fp, hi, lo);
 		break;
 
 	default:
 		panic("fpu_explode: invalid type %d", type);
 	}
 
-	if (s == FPC_QNAN && (fp->fp_mant[0] & FP_QUIETBIT) == 0) {
+	if (class == FPC_QNAN && (fp->fp_mant[0] & FP_QUIETBIT) == 0) {
 		/*
 		 * Input is a signalling NaN.  All operations that return
 		 * an input NaN operand put it through a ``NaN conversion'',
@@ -248,13 +247,8 @@ fpu_explode(struct fpemu *fe, struct fpn *fp, int type, u_int *space)
 		 */
 		fp->fp_mant[0] |= FP_QUIETBIT;
 		fe->fe_cx = FPSCR_VXSNAN;	/* assert invalid operand */
-		s = FPC_SNAN;
+		class = FPC_SNAN;
 	}
-	fp->fp_class = s;
-	DPRINTF(FPE_REG, ("fpu_explode: %%%c%d => ", (type == FTYPE_LNG) ? 'x' :
-		((type == FTYPE_INT) ? 'i' : 
-			((type == FTYPE_SNG) ? 's' :
-				((type == FTYPE_DBL) ? 'd' : '?'))),
-		reg));
+	fp->fp_class = class;
 	DUMPFPN(FPE_REG, fp);
 }

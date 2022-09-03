@@ -336,7 +336,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 		 * and update index reg if needed.
 		 */
 		uint64_t buf;
-		size_t size = sizeof(float);
+		size_t size = sizeof(double);
 		int store, update;
 
 		cond = 0; /* ld/st never set condition codes */
@@ -372,10 +372,10 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				return (NOTFPU);
 
 			store = (instr.i_x.i_xo & 0x80);
-			if (instr.i_x.i_xo & 0x40)
-				size = sizeof(double);
-			else
+			if ((instr.i_x.i_xo & 0x40) == 0) {
 				type = FTYPE_SNG;
+				size = sizeof(float);
+			}
 			update = (instr.i_x.i_xo & 0x20);
 			
 			/* calculate EA of load/store */
@@ -389,10 +389,10 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			rt = instr.i_x.i_rt;
 		} else {
 			store = instr.i_d.i_opcd & 0x4;
-			if (instr.i_d.i_opcd & 0x2)
-				size = sizeof(double);
-			else
+			if ((instr.i_d.i_opcd & 0x2) == 0) {
 				type = FTYPE_SNG;
+				size = sizeof(float);
+			}
 			update = instr.i_d.i_opcd & 0x1;
 
 			/* calculate EA of load/store */

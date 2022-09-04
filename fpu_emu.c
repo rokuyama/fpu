@@ -167,6 +167,8 @@ int fpe_debug = 0;
 extern vaddr_t opc_disasm(vaddr_t loc, int opcode);
 #endif
 
+static int fpu_execute(struct trapframe *, struct fpemu *, union instr *);
+
 #ifdef DEBUG
 /*
  * Dump a `fpn' structure.
@@ -288,7 +290,7 @@ success:
  * Note that we do not catch all illegal opcodes, so you can, for instance,
  * multiply two integers this way.
  */
-int
+static int
 fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 {
 	struct fpn *fp;

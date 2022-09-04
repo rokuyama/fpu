@@ -44,7 +44,6 @@ struct fpn;
 
 /* fpu.c */
 bool fpu_emulate(struct trapframe *, struct fpreg *, ksiginfo_t *);
-int fpu_execute(struct trapframe *, struct fpemu *, union instr *);
 
 /* fpu_add.c */
 struct fpn *fpu_add(struct fpemu *);

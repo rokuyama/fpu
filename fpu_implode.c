@@ -451,14 +451,13 @@ fpu_ftod(struct fpemu *fe, struct fpn *fp, int *cx)
 	}
 	if (ISINF(fp)) {
 		*cx |= FPRF_SIGN(sign) | FPSCR_FU;
-		sign |= DBL_EXP(DBL_EXP_INFNAN);
-		goto zero;
+		return HI_WORD(sign | DBL_EXP(DBL_EXP_INFNAN));
 	}
 	if (ISZERO(fp)) {
 		*cx |= FPSCR_FE;
 		if (sign)
 			*cx |= FPSCR_C;
-zero:		return HI_WORD(sign);
+		return HI_WORD(sign);
 	}
 
 	if ((exp = fp->fp_exp + DBL_EXP_BIAS) <= 0) {

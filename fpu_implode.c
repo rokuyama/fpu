@@ -519,30 +519,26 @@ fpu_implode(struct fpemu *fe, struct fpn *fp, int type, uint64_t *p)
 	case FTYPE_LNG:
 		/* FPRF is undefined. */
 		*p = fpu_ftox(fe, fp, &cx, rn);
-		DPRINTF(FPE_REG, ("fpu_implode: long %x %x\n",
-			space[0], space[1]));
+		DPRINTF(FPE_REG, ("fpu_implode: long %x %x\n", *hi, *lo));
 		break;
 
 	case FTYPE_INT:
 		/* FPRF is undefined. */
 		*hi = 0;
 		*lo = fpu_ftoi(fe, fp, &cx, rn);
-		DPRINTF(FPE_REG, ("fpu_implode: int %x\n",
-			space[1]));
+		DPRINTF(FPE_REG, ("fpu_implode: int %x\n", *lo));
 		break;
 
 	case FTYPE_SNG:
 		*hi = fpu_ftos(fe, fp, &cx);
 		*lo = 0;
-		DPRINTF(FPE_REG, ("fpu_implode: single %x\n",
-			space[0]));
+		DPRINTF(FPE_REG, ("fpu_implode: single %x\n", *hi));
 		break;
 
 	case FTYPE_DBL:
 		*p = fpu_ftod(fe, fp, &cx);
-		DPRINTF(FPE_REG, ("fpu_implode: double %x %x\n",
-			space[0], space[1]));
-		break;		break;
+		DPRINTF(FPE_REG, ("fpu_implode: double %x %x\n", *hi, *lo));
+		break;
 
 	default:
 		panic("fpu_implode: invalid type %d", type);

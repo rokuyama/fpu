@@ -48,9 +48,7 @@
 __KERNEL_RCSID(0, "$NetBSD: fpu_subr.c,v 1.7 2022/09/02 12:29:58 rin Exp $");
 
 #include <sys/types.h>
-#if defined(DIAGNOSTIC)||defined(DEBUG)
 #include <sys/systm.h>
-#endif
 
 #include <powerpc/instr.h>
 #include <machine/fpu.h>

@@ -79,6 +79,8 @@ fpu_compare(struct fpemu *fe, int ordered)
 	struct fpn *a, *b, *r;
 	int cc;
 
+	fe->fe_fpscr &= ~FPSCR_FPCC;
+
 	a = &fe->fe_f1;
 	b = &fe->fe_f2;
 	r = &fe->fe_f3;

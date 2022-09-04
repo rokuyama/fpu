@@ -624,8 +624,8 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			case	OPC63_FCFID:
 				FPU_EMU_EVCNT_INCR(fcfid);
 				DPRINTF(FPE_INSN, ("fpu_execute: FCFID\n"));
-				type = FTYPE_LNG;
-				fpu_explode(fe, fp = &fe->fe_f1, type, FR(rb));
+				fpu_explode(fe, fp = &fe->fe_f1, FTYPE_LNG,
+				    FR(rb));
 				type = FTYPE_DBL | FTYPE_FPSCR;
 				break;
 			default:

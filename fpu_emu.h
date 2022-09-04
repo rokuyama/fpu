@@ -185,6 +185,8 @@ struct	fpn *fpu_newnan(struct fpemu *);
  */
 int	fpu_shr(struct fpn *, int);
 
+void	fpu_norm(struct fpn *);
+
 void	fpu_explode(struct fpemu *, struct fpn *, int, uint64_t);
 void	fpu_implode(struct fpemu *, struct fpn *, int, uint64_t *);
 

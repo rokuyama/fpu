@@ -60,6 +60,11 @@ __KERNEL_RCSID(0, "$NetBSD: fpu_explode.c,v 1.12 2022/09/02 12:40:49 rin Exp $")
 #include <powerpc/fpu/fpu_emu.h>
 #include <powerpc/fpu/fpu_extern.h>
 
+static int fpu_itof(struct fpn *, u_int);
+static int fpu_xtof(struct fpn *, uint64_t);
+static int fpu_stof(struct fpn *, u_int);
+static int fpu_dtof(struct fpn *, u_int, u_int);
+
 /*
  * N.B.: in all of the following, we assume the FP format is
  *
@@ -82,7 +87,7 @@ __KERNEL_RCSID(0, "$NetBSD: fpu_explode.c,v 1.12 2022/09/02 12:40:49 rin Exp $")
 /*
  * int -> fpn.
  */
-int
+static int
 fpu_itof(struct fpn *fp, u_int lo)
 {
 
@@ -106,7 +111,7 @@ fpu_itof(struct fpn *fp, u_int lo)
 /*
  * 64-bit int -> fpn.
  */
-int
+static int
 fpu_xtof(struct fpn *fp, uint64_t i)
 {
 
@@ -165,7 +170,7 @@ fpu_xtof(struct fpn *fp, uint64_t i)
  * We assume a single occupies at most (64-FP_LG) bits in the internal
  * format: i.e., needs at most fp_mant[0] and fp_mant[1].
  */
-int
+static int
 fpu_stof(struct fpn *fp, u_int hi)
 {
 	int exp;
@@ -183,7 +188,7 @@ fpu_stof(struct fpn *fp, u_int hi)
  * 64-bit double -> fpn.
  * We assume this uses at most (96-FP_LG) bits.
  */
-int
+static int
 fpu_dtof(struct fpn *fp, u_int hi, u_int lo)
 {
 	int exp;

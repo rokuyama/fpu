@@ -190,7 +190,7 @@ fpu_div(struct fpemu *fe)
 	}
 	/*
 	 * Need to split the following out cause they generate different
-	 * exceptions. 
+	 * exceptions.
 	 */
 	if (ISINF(x)) {
 		if (x->fp_class == y->fp_class) {

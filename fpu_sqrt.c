@@ -352,7 +352,7 @@ fpu_sqrt(struct fpemu *fe)
 	FPU_SUBC(d0, x0, t0);
 	if ((int)d0 >= 0) {
 		x0 = d0, x1 = d1, x2 = d2;
-		q |= bit;
+		q = bit;
 		y1 |= 1;		/* now t1, y1 are set in concrete */
 	}
 	ODD_DOUBLE;
@@ -386,7 +386,7 @@ fpu_sqrt(struct fpemu *fe)
 	FPU_SUBC(d0, x0, t0);
 	if ((int)d0 >= 0) {
 		x0 = d0, x1 = d1, x2 = d2; x3 = d3;
-		q |= bit;
+		q = bit;
 		y2 |= 1;
 	}
 	ODD_DOUBLE;

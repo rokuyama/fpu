@@ -93,13 +93,15 @@ fpu_add(struct fpemu *fe)
 	DUMPFPN(FPE_REG, x);
 	DUMPFPN(FPE_REG, y);
 	DPRINTF(FPE_REG, ("=>\n"));
-	ORDER(x, y);
-	if (ISNAN(y)) {
-		if (ISSNAN(y))
+	if (ISNAN(x) || ISNAN(y)) {
+		if (ISSNAN(x) || ISSNAN(y))
 			fe->fe_cx |= FPSCR_VXSNAN;
+		if (ISNAN(x))
+			y = x;
 		DUMPFPN(FPE_REG, y);
 		return (y);
 	}
+	ORDER(x, y);
 	if (ISINF(y)) {
 		if (ISINF(x) && x->fp_sign != y->fp_sign) {
 			fe->fe_cx |= FPSCR_VXISI;

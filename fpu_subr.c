@@ -209,8 +209,8 @@ fpu_newnan(struct fpemu *fe)
 	fp = &fe->fe_f3;
 	fp->fp_class = FPC_QNAN;
 	fp->fp_sign = 0;
-	fp->fp_mant[0] = FP_1 - 1;
-	fp->fp_mant[1] = fp->fp_mant[2] = fp->fp_mant[3] = ~0;
+	fp->fp_mant[0] = FP_QUIETBIT;
+	fp->fp_mant[1] = fp->fp_mant[2] = fp->fp_mant[3] = 0;
 	DUMPFPN(FPE_REG, fp);
 	return (fp);
 }

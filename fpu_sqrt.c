@@ -221,8 +221,6 @@ fpu_sqrt(struct fpemu *fe)
 		return (x);
 	}
 	if (ISZERO(x)) {
-		fe->fe_cx |= FPSCR_ZX;
-		x->fp_class = FPC_INF;
 		DUMPFPN(FPE_REG, x);
 		return (x);
 	}

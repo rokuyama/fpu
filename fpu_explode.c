@@ -227,6 +227,7 @@ fpu_explode(struct fpemu *fe, struct fpn *fp, int type, uint64_t i)
 		break;
 
 	case FTYPE_INT:
+		fp->fp_sign = lo >> 31;
 		class = fpu_itof(fp, lo);
 		break;
 

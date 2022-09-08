@@ -95,7 +95,10 @@ fpu_compare(struct fpemu *fe, int ordered)
 		if (ISSNAN(a) || ISSNAN(b))
 			cc |= FPSCR_VXSNAN;
 		if (ordered) {
-			if (fe->fe_fpscr & FPSCR_VE || ISQNAN(a) || ISQNAN(b))
+#ifdef notyet /* XXXRO */
+			if ((fe->fe_fpscr & FPSCR_VE) == 0 ||
+			    ISQNAN(a) || ISQNAN(b))
+#endif
 				cc |= FPSCR_VXVC;
 		}
 		goto done;

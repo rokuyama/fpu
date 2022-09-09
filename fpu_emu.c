@@ -452,11 +452,6 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			tf->tf_fixreg[ra] = addr;
 		/* Complete. */
 		return (0);
-#ifdef notyet
-	} else if (instr.i_any.i_opcd == OPC_load_st_62) {
-		/* These are 64-bit extenstions */
-		return (NOTFPU);
-#endif
 	} else if (instr.i_any.i_opcd == OPC_sp_fp_59 ||
 		instr.i_any.i_opcd == OPC_dp_fp_63) {
 

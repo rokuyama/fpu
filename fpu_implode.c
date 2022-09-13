@@ -397,10 +397,14 @@ fpu_ftos(struct fpemu *fe, struct fpn *fp, int *cx)
 			*cx |= FPRF_SIGN(sign);
 			return (sign | SNG_EXP(1) | 0);
 		}
-		*cx |= FPSCR_C | FPRF_SIGN(sign);
-		if (((fe->fe_cx | *cx) & FPSCR_FI) ||
-		    (fe->fe_fpscr & FPSCR_UX))
+		if (*cx & FPSCR_FI) {
 			*cx |= FPSCR_UX;
+			if (fp->fp_mant[3] == 0) {
+				*cx |= FPSCR_FE;
+				return sign;
+			}
+		}
+		*cx |= FPSCR_C | FPRF_SIGN(sign);
 		return (sign | SNG_EXP(0) | fp->fp_mant[3]);
 	}
 	/* -FP_NG for g,r; -1 for implied 1; -SNG_FRACBITS for fraction */
@@ -466,10 +470,15 @@ fpu_ftod(struct fpemu *fe, struct fpn *fp, int *cx)
 			*cx |= FPRF_SIGN(sign);
 			return HI_WORD(sign | DBL_EXP(1) | 0);
 		}
-		*cx |= FPSCR_C | FPRF_SIGN(sign);
-		if (((fe->fe_cx | *cx) & FPSCR_FI) ||
-		    (fe->fe_fpscr & FPSCR_UX))
+		if (*cx & FPSCR_FI) {
 			*cx |= FPSCR_UX;
+			if ((fp->fp_mant[2] & DBL_MASK) == 0 &&
+			     fp->fp_mant[3] == 0) {
+				*cx |= FPSCR_FE;
+				return HI_WORD(sign);
+			}
+		}
+		*cx |= FPSCR_C | FPRF_SIGN(sign);
 		exp = 0;
 		goto done;
 	}

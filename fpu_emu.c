@@ -429,7 +429,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				DPRINTF(FPE_INSN,
 					("fpu_execute: Store DBL at %p\n",
 						(void *)addr));
-				if (copyout(&fs->fpreg[rt], (void *)addr, size)) {
+				if (copyout(&FR(rt), (void *)addr, size)) {
 					fe->fe_addr = addr;
 					return (FAULT);
 				}

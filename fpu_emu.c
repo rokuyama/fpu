@@ -439,7 +439,7 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 			FPU_EMU_EVCNT_INCR(fpload);
 			DPRINTF(FPE_INSN, ("fpu_execute: Load from %p\n",
 				(void *)addr));
-			if (copyin((const void *)addr, &fs->fpreg[rt], size)) {
+			if (copyin((const void *)addr, &FR(rt), size)) {
 				fe->fe_addr = addr;
 				return (FAULT);
 			}

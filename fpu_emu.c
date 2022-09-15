@@ -760,7 +760,8 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				fpu_explode(fe, &fe->fe_f2, type, FR(rb));
 				fp = fpu_sub(fe);
 				/* Negate */
-				fp->fp_sign ^= 1;
+				if (!ISNAN(fp))
+					fp->fp_sign ^= 1;
 				break;
 			case	OPC59_FNMADDS:
 				FPU_EMU_EVCNT_INCR(fnmadd);
@@ -772,7 +773,8 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 				fpu_explode(fe, &fe->fe_f2, type, FR(rb));
 				fp = fpu_add(fe);
 				/* Negate */
-				fp->fp_sign ^= 1;
+				if (!ISNAN(fp))
+					fp->fp_sign ^= 1;
 				break;
 			default:
 				return (NOTFPU);

@@ -282,6 +282,31 @@ success:
 	}
 }
 
+static uint32_t
+fpu_to_single(uint64_t reg)
+{
+	uint32_t sign, frac, word;
+	int exp, shift;
+
+	sign = (reg & __BIT(63)) >> 32;
+	exp = __SHIFTOUT(reg, __BITS(62, 52)) - 1023;
+	if (exp > -127 || (reg & ~__BIT(63)) == 0) {
+		/* no denormalized required */
+		/* highest bit for exponet is same for double and float */
+		word =  ((reg & __BIT(62)) >> 32) |
+		    __SHIFTOUT(reg, __BITS(58, 52) | __BITS(51, 29));
+	} else if (exp <= -127 && exp >= -149) {
+		/* denormalized */
+		shift = - 126 - exp; /* 1 ... 23 */
+		frac = __SHIFTOUT(__BIT(52) | reg, __BITS(52, 29 + shift));
+		word = /* __SHIFTIN(0, __BITS(30, 23)) | */ frac;
+	} else {
+		/* undefined */
+		word = 0;
+	}
+	return sign | word;
+}
+
 /*
  * Execute an FPU instruction (one that runs entirely in the FPU; not
  * FBfcc or STF, for instance).  On return, fe->fe_fs->fs_fsr will be
@@ -411,28 +436,25 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 
 		if (store) {
 			/* Store */
+			uint32_t word;
+			const void *kaddr;
+
 			FPU_EMU_EVCNT_INCR(fpstore);
 			if (type != FTYPE_DBL) {
-				uint64_t buf;
-
 				DPRINTF(FPE_INSN,
 					("fpu_execute: Store SNG at %p\n",
 						(void *)addr));
-				fpu_explode(fe, fp = &fe->fe_f1, FTYPE_DBL,
-				    FR(rt));
-				fpu_implode(fe, fp, type, &buf);
-				if (copyout(&buf, (void *)addr, size)) {
-					fe->fe_addr = addr;
-					return (FAULT);
-				}
+				word = fpu_to_single(FR(rt));
+				kaddr = &word;
 			} else {
 				DPRINTF(FPE_INSN,
 					("fpu_execute: Store DBL at %p\n",
 						(void *)addr));
-				if (copyout(&FR(rt), (void *)addr, size)) {
-					fe->fe_addr = addr;
-					return (FAULT);
-				}
+				kaddr = &FR(rt);
+			}
+			if (copyout(kaddr, (void *)addr, size)) {
+				fe->fe_addr = addr;
+				return (FAULT);
 			}
 		} else {
 			/* Load */

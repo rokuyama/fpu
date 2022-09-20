@@ -315,8 +315,8 @@ fpu_to_single(uint64_t reg)
 		 * No denormalization required: normalized, zero, inf, NaN,
 		 * or numbers larger than MAXFLOAT (see comment above).
 		 *
-		 * Note that MSB and 7-LSBs in exponent is same for double and
-		 * float formats in this case.
+		 * Note that MSB and 7-LSBs in exponent are same for double
+		 * and float formats in this case.
 		 */
 		word =  ((reg & __BIT(62)) >> 32) |
 		    __SHIFTOUT(reg, __BITS(58, 52) | __BITS(51, 29));

@@ -282,6 +282,26 @@ success:
 	}
 }
 
+/*
+ * fpu_to_single(): Helper function for stfs{,u}{,x}.
+ *
+ * Single-precision (float) data is internally represented in
+ * double-precision (double) format in floating-point registers (FRs).
+ * Even though double value cannot be translated into float format in
+ * general, Power ISA (2.0.3--3.1) specify conversion algorithm when
+ * stored to memory (see Sec. 4.6.3):
+ *
+ *  - Extra fraction bits are truncated regardless of rounding mode.
+ *  - When magnitude is larger than the maximum number in float format,
+ *    bits 63--62 and 58--29 are mechanically copied into bits 31--0.
+ *  - When magnitude is representable as denormalized number in float
+ *    format, it is stored as normalized double value in FRs;
+ *    denormalization is required in this case.
+ *  - When magnitude is smaller than the minimum denormalized number in
+ *    float format, the result is undefined. For G5 (790MP Rev 1.1),
+ *    (sign | 0) seems to be stored. For G4 and prior, some ``random''
+ *    garbage is stored in exponent. We mimic G5 for now.
+ */
 static uint32_t
 fpu_to_single(uint64_t reg)
 {
@@ -291,17 +311,22 @@ fpu_to_single(uint64_t reg)
 	sign = (reg & __BIT(63)) >> 32;
 	exp = __SHIFTOUT(reg, __BITS(62, 52)) - 1023;
 	if (exp > -127 || (reg & ~__BIT(63)) == 0) {
-		/* no denormalized required */
-		/* highest bit for exponet is same for double and float */
+		/*
+		 * No denormalization required: normalized, zero, inf, NaN,
+		 * or numbers larger than MAXFLOAT (see comment above).
+		 *
+		 * Note that MSB and 7-LSBs in exponent is same for double and
+		 * float formats in this case.
+		 */
 		word =  ((reg & __BIT(62)) >> 32) |
 		    __SHIFTOUT(reg, __BITS(58, 52) | __BITS(51, 29));
 	} else if (exp <= -127 && exp >= -149) {
-		/* denormalized */
+		/* Denormalized. */
 		shift = - 126 - exp; /* 1 ... 23 */
 		frac = __SHIFTOUT(__BIT(52) | reg, __BITS(52, 29 + shift));
 		word = /* __SHIFTIN(0, __BITS(30, 23)) | */ frac;
 	} else {
-		/* undefined */
+		/* Undefined. Mimic G5 for now. */
 		word = 0;
 	}
 	return sign | word;
@@ -441,6 +466,13 @@ fpu_execute(struct trapframe *tf, struct fpemu *fe, union instr *insn)
 
 			FPU_EMU_EVCNT_INCR(fpstore);
 			if (type != FTYPE_DBL) {
+				/*
+				 * As Power ISA specifies conversion algorithm
+				 * for store floating-point single insns, we
+				 * cannot use fpu_explode() and _implode() here.
+				 * See fpu_to_single() and comment therein for
+				 * more details.
+				 */
 				DPRINTF(FPE_INSN,
 					("fpu_execute: Store SNG at %p\n",
 						(void *)addr));
